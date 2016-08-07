@@ -1,0 +1,175 @@
+<html>
+<head>
+  <title>Game Test</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no" />
+  <style>
+    canvas {
+      border: 1px solid black;
+      width: 50%;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="mycanvas" width="640" height="360" ></canvas>
+  <script>
+
+    //initial position
+    var x = 315;
+    var y = 329;
+	
+	var bullets = [];
+	//var bulletX = x + 8;
+	//var bulletY = y - 10;
+	
+	var isMoving = false;
+	//var bulletMove = false;
+    //rectangle dimensions
+    var w = 20;
+    var h = 30;
+	
+	//var bulletW = 4;
+	//var bulletH = 10;
+
+    //speed at which it moves
+    var speed = 0;
+	var speedY = 0;
+	var bulletSpeed = 10;
+	
+    //grab the canvas and context
+    var canvas = document.getElementById("mycanvas");
+    var ctx = canvas.getContext("2d");
+	
+      var stopPlayer = function() {
+        isMoving = false;
+      }
+	
+	window.addEventListener('keydown',keyDownTextField,false); 
+	window.addEventListener('keyup', stopPlayer);
+
+	function keyDownTextField(e) {
+	  var keyCode = e.keyCode;
+	  if(keyCode==39) 
+	  {
+		  //right arrow
+			speed = 10;
+			isMoving = true;
+	  } 
+	  else if(keyCode == 37)
+	  {
+		  //left arrow
+			speed = -10;
+			isMoving = true;
+	  }
+	  else if(keyCode == 40)
+	  {
+		  //down arrow
+		  	speedY = 10;
+			isMoving = true;
+	  }
+	  else if(keyCode == 38)
+	  {
+		  //up arrow
+		  	speedY = -10;
+			isMoving = true;
+	  }
+	  else if(keyCode == 32)
+	  {
+		  //spacebar
+		  
+		  bullets.push({  bulletX :x + 8,bulletY: y - 10, bulletW : 4, bulletH : 10, bulletMove : true})
+		  //bulletMove = true;
+		  //bulletX = x + 8;
+		  //bulletY = y - 10;
+	  }
+	  else
+	  {
+		alert(keyCode);
+	  }
+	}
+
+
+    var update = function() {
+	  
+	  if(x >= 600)
+	  {
+		  x = 600;
+	  }
+	  
+	  if( x <= 5)
+	  {
+		  x = 5;
+	  }
+	  
+	  if( y >= 329)
+	  {
+		  y = 329;
+	  }
+	  
+	  if( y <= 10)
+	  {
+		  y = 10;
+	  }
+	if(isMoving) {
+      x = x + speed;
+	  y = y + speedY;
+    }
+	
+	for(i = 0; i < bullets.length; i++)
+	{
+		if(bullets[i].bulletMove)
+		{
+			bullets[i].bulletY = bullets[i].bulletY - bulletSpeed;
+		}
+		
+		if(bullets[i].bulletY <= 0)
+		{
+			bullets[i].bulletMove = false;
+		}
+	}
+
+      //define color
+      blueZone = x > 0 && x < 100;
+      greenZone = !blueZone && x < 200;
+    };
+
+    //show it on the screen
+    var draw = function() {
+      ctx.clearRect(0,0,640,360);
+
+      //if(blueZone) {
+      //  ctx.fillStyle = "#3333FF";
+      //}
+      //else if(greenZone) {
+      //  ctx.fillStyle = "#00CC66";
+      //}
+      //else {
+        ctx.fillStyle = "rgb(200, 0, 100)";
+      //}
+		
+	for(i = 0; i < bullets.length; i++)
+	{
+	  if(bullets[i].bulletMove)
+	  {
+		  ctx.fillRect(bullets[i].bulletX, bullets[i].bulletY, bullets[i].bulletW, bullets[i].bulletH);
+	  }
+	}
+
+      
+      ctx.fillRect(x, y, w, h);
+    };
+
+    //gets executed multiple times per second
+    var step = function() {
+
+      update();
+      draw();
+
+      window.requestAnimationFrame(step);
+    };
+
+    //initial kick
+    step();
+    </script>
+</body>
+</html>
+
